@@ -1,7 +1,7 @@
 package com.lmello.bookstore.controller;
 
-import com.lmello.bookstore.dto.BookDTO;
-import com.lmello.bookstore.model.Book;
+import com.lmello.bookstore.dto.book.BookDTO;
+import com.lmello.bookstore.dto.book.BookResponseDTO;
 import com.lmello.bookstore.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -26,49 +26,38 @@ public class BookController {
     @PostMapping
     @Transactional
     public ResponseEntity<?> createBook(@Valid @RequestBody BookDTO bookDTO, UriComponentsBuilder uriComponentsBuilder) {
-        Book book = bookService.createBook(bookDTO);
+        BookResponseDTO book = bookService.createBook(bookDTO);
 
         URI uri = uriComponentsBuilder
                 .path("/books/{id}")
-                .buildAndExpand(book.getId())
+                .buildAndExpand(book.id())
                 .toUri();
 
-        BookDTO returnBook = new BookDTO(
-                book.getId(),
-                book.getAuthor(),
-                book.getTitle(),
-                book.getUrl(),
-                book.getSynopsis(),
-                book.getTags(),
-                book.getContent(),
-                book.getActive()
-        );
-
-        return ResponseEntity.created(uri).body(returnBook);
+        return ResponseEntity.created(uri).body(book);
     }
 
     @GetMapping
     public ResponseEntity<?> findAll(
             @PageableDefault Pageable pagination,
-            @RequestParam(value = "strict", defaultValue = "true") String getDeleted
+            @RequestParam(value = "onlyActive", defaultValue = "true") String getDeleted,
+            @RequestParam(value = "random", defaultValue = "false") String getRandom
     ) {
+        if (Boolean.parseBoolean(getRandom)) {
+            return ResponseEntity.ok(bookService.findRandomBook());
+        }
+
         boolean parsedGetDeleted = Boolean.parseBoolean(getDeleted);
 
-        Page<Book> books = bookService.findAllBooks(parsedGetDeleted, pagination);
+        Page<BookResponseDTO> books = bookService.findAllBooks(parsedGetDeleted, pagination);
 
         return ResponseEntity.ok(books);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable String id) {
-        Book book = bookService.findById(id);
+        BookResponseDTO book = bookService.findById(id);
 
         return ResponseEntity.ok(book);
-    }
-
-    @GetMapping("/random")
-    public ResponseEntity<?> findRandom() {
-        return ResponseEntity.ok(bookService.findRandomBook());
     }
 
     @PutMapping("/{id}")

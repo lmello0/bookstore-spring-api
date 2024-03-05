@@ -1,38 +1,35 @@
-package com.lmello.bookstore.dto;
+package com.lmello.bookstore.dto.book;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.lmello.bookstore.dto.paragraph.ParagraphDTO;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
 public record BookDTO(
         String id,
+
         @JsonProperty
-        @NotNull
         @NotBlank
         String author,
 
         @JsonProperty
-        @NotNull
         @NotBlank
         String title,
 
         @JsonProperty
-        @NotNull
-        @NotBlank
-        String url,
-
-        @JsonProperty
-        @NotNull
         @NotBlank
         String synopsis,
+
+        @JsonProperty
+        @NotBlank
+        String url,
 
         @JsonProperty
         List<String> tags,
 
         @JsonProperty
-        List<String> content,
+        List<ParagraphDTO> paragraphs,
 
         @JsonProperty
         Boolean active

@@ -1,20 +1,20 @@
 package com.lmello.bookstore.service;
 
-import com.lmello.bookstore.dto.BookDTO;
-import com.lmello.bookstore.model.Book;
+import com.lmello.bookstore.dto.book.BookDTO;
+import com.lmello.bookstore.dto.book.BookResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface BookService {
-    Book createBook(BookDTO bookDTO);
+    BookResponseDTO createBook(BookDTO bookDTO);
 
-    Page<Book> findAllBooks(boolean getDeleted, Pageable pagination);
+    Page<BookResponseDTO> findAllBooks(boolean getDeleted, Pageable pagination);
 
-    Book findRandomBook();
+    BookResponseDTO findById(String id);
 
-    Book findById(String id);
+    BookResponseDTO findRandomBook();
 
-    Book updateBook(String bookId, BookDTO bookDTO);
+    BookResponseDTO updateBook(String id, BookDTO bookDTO);
 
-    void disableBook(String bookId);
+    void disableBook(String id);
 }

@@ -1,7 +1,7 @@
 package com.lmello.bookstore.infra.exception;
 
+import com.lmello.bookstore.dto.exception.ExceptionResponseDTO;
 import com.lmello.bookstore.exception.DuplicateEntryException;
-import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -15,7 +15,7 @@ import java.util.List;
 public class ErrorHandler {
     @ExceptionHandler(DuplicateEntryException.class)
     public ResponseEntity<?> handleErrorDuplicateEntry(DuplicateEntryException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ExceptionResponseDTO(ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -28,6 +28,11 @@ public class ErrorHandler {
                         .map(DataValidationErrors::new)
                         .toList()
         );
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
+        return ResponseEntity.internalServerError().body(new ExceptionResponseDTO(ex.getMessage()));
     }
 
     private record DataValidationErrors(String field, String message) {
