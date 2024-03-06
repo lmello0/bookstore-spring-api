@@ -10,8 +10,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,8 +23,9 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Transactional
     public Author createAuthor(AuthorDTO authorDTO) {
-        if (authorRepository.findByName(authorDTO.name()).isPresent()) {
+        if (authorRepository.findByNameIgnoreCase(authorDTO.name()).isPresent()) {
             throw new DuplicateEntryException("\"" + authorDTO.name() + "\" already exists");
         }
 
@@ -37,18 +38,12 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<Author> findByName(String name) {
-        return authorRepository.findByNameStartsWithIgnoreCaseOrderByName(name);
+    public Optional<Author> findByName(String name) {
+        return authorRepository.findByName(name);
     }
 
     @Override
-    public Author findByNameOrCreate(AuthorDTO authorDTO) {
-        Optional<Author> author = authorRepository.findByName(authorDTO.name());
-
-        return author.orElseGet(() -> createAuthor(authorDTO));
-    }
-
-    @Override
+    @Transactional
     public Author updateAuthor(String id, AuthorDTO authorDTO) {
         Optional<Author> author = authorRepository.findById(id);
 

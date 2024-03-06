@@ -19,8 +19,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,8 +45,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public BookResponseDTO createBook(BookDTO bookDTO) {
-        Author bookAuthor = authorService.findByNameOrCreate(new AuthorDTO(bookDTO.author()));
+        Author bookAuthor = authorService.findByName(bookDTO.author())
+                .orElseGet(() -> authorService.createAuthor(new AuthorDTO(bookDTO.author())));
 
         if (bookRepository.findByTitleAndAuthor(bookDTO.title(), bookAuthor).isPresent()) {
             throw new DuplicateEntryException("\"" + bookDTO.title() + "\" by \"" + bookDTO.author() + "\" already exists");
@@ -50,7 +56,8 @@ public class BookServiceImpl implements BookService {
 
         Set<Tag> tags = bookDTO.tags()
                 .stream()
-                .map((tag) -> tagService.findByNameOrCreate(new TagDTO(tag)))
+                .map(tag -> tagService.findByName(tag)
+                        .orElseGet(() -> tagService.createTag(new TagDTO(tag))))
                 .collect(Collectors.toSet());
 
         Book newBook = bookRepository.save(new Book(bookDTO, bookAuthor, tags));
@@ -96,6 +103,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public BookResponseDTO updateBook(String id, BookDTO bookDTO) {
         Optional<Book> book = bookRepository.findById(id);
 
@@ -112,6 +120,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public void disableBook(String id) {
         Optional<Book> book = bookRepository.findById(id);
 

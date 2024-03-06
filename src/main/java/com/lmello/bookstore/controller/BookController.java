@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -24,7 +23,6 @@ public class BookController {
     }
 
     @PostMapping
-    @Transactional
     public ResponseEntity<?> createBook(@Valid @RequestBody BookDTO bookDTO, UriComponentsBuilder uriComponentsBuilder) {
         BookResponseDTO book = bookService.createBook(bookDTO);
 
@@ -61,13 +59,11 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    @Transactional
     public ResponseEntity<?> updateBook(@PathVariable String id, @RequestBody @Valid BookDTO bookDTO) {
         return ResponseEntity.ok(bookService.updateBook(id, bookDTO));
     }
 
     @DeleteMapping("/{id}")
-    @Transactional
     public ResponseEntity<?> deleteBook(@PathVariable String id) {
         bookService.disableBook(id);
 

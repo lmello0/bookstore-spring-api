@@ -30,10 +30,10 @@ public class ErrorHandler {
         );
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
-        return ResponseEntity.internalServerError().body(new ExceptionResponseDTO(ex.getMessage()));
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
+//        return ResponseEntity.internalServerError().body(new ExceptionResponseDTO(ex.getMessage()));
+//    }
 
     private record DataValidationErrors(String field, String message) {
         public DataValidationErrors(FieldError error) {

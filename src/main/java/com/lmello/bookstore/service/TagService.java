@@ -5,14 +5,14 @@ import com.lmello.bookstore.model.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 public interface TagService {
     Tag createTag(TagDTO tagDTO);
 
     Page<Tag> findAllTags(Pageable pagination);
 
-    Tag findByName(String tag);
-
-    Tag findByNameOrCreate(TagDTO tagDTO);
+    Optional<Tag> findByName(String tag);
 
     Tag updateTag(String id, TagDTO tagDTO);
 }

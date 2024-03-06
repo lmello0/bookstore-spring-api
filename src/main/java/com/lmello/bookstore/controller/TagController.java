@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -24,7 +23,6 @@ public class TagController {
     }
 
     @PostMapping
-    @Transactional
     public ResponseEntity<?> createTag(@Valid @RequestBody TagDTO tagDTO, UriComponentsBuilder uriComponentsBuilder) {
         Tag tag = tagService.createTag(tagDTO);
 
@@ -51,7 +49,6 @@ public class TagController {
     }
 
     @PutMapping("/{id}")
-    @Transactional
     public ResponseEntity<?> updateTag(@PathVariable String id, @Valid @RequestBody TagDTO tagDTO) {
         return ResponseEntity.ok(tagService.updateTag(id, tagDTO));
     }

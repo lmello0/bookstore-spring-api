@@ -9,6 +9,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class ParagraphServiceImpl implements ParagraphService {
     }
 
     @Override
+    @Transactional
     public List<Paragraph> createParagraphs(List<ParagraphDTO> paragraphDTOS, Book book) {
         List<Paragraph> returnParagraphs = new ArrayList<>();
 
@@ -48,6 +50,7 @@ public class ParagraphServiceImpl implements ParagraphService {
     }
 
     @Override
+    @Transactional
     public List<Paragraph> updateParagraphs(List<ParagraphDTO> paragraphDTOS, Book book) {
         paragraphRepository.deleteAllByBook(book);
 

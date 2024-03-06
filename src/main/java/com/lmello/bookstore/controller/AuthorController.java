@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -24,7 +23,6 @@ public class AuthorController {
     }
 
     @PostMapping
-    @Transactional
     public ResponseEntity<?> createAuthor(@Valid @RequestBody AuthorDTO authorDTO, UriComponentsBuilder uriComponentsBuilder) {
         Author author = authorService.createAuthor(authorDTO);
 
@@ -51,7 +49,6 @@ public class AuthorController {
     }
 
     @PutMapping("/{id}")
-    @Transactional
     public ResponseEntity<?> updateAuthor(@PathVariable String id, @Valid @RequestBody AuthorDTO authorDTO) {
         return ResponseEntity.ok(authorService.updateAuthor(id, authorDTO));
     }

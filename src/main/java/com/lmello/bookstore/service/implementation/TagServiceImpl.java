@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -22,8 +23,9 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public Tag createTag(TagDTO tagDTO) {
-        Optional<Tag> tag = tagRepository.findByTagName(tagDTO.tagName());
+        Optional<Tag> tag = tagRepository.findByTagNameIgnoreCase(tagDTO.tagName());
 
         if (tag.isPresent()) {
             throw new DuplicateEntryException("\"" + tag.get().getTagName() + "\" already exists");
@@ -38,24 +40,12 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag findByName(String tagName) {
-        Optional<Tag> tag = tagRepository.findByTagName(tagName);
-
-        if (tag.isEmpty()) {
-            throw new NotFoundException("\"" + tagName + "\" not found");
-        }
-
-        return tag.get();
+    public Optional<Tag> findByName(String tagName) {
+        return tagRepository.findByTagNameIgnoreCase(tagName);
     }
 
     @Override
-    public Tag findByNameOrCreate(TagDTO tagDTO) {
-        Optional<Tag> tag = tagRepository.findByTagName(tagDTO.tagName());
-
-        return tag.orElseGet(() -> createTag(tagDTO));
-    }
-
-    @Override
+    @Transactional
     public Tag updateTag(String id, TagDTO tagDTO) {
         Optional<Tag> tag = tagRepository.findById(id);
 
